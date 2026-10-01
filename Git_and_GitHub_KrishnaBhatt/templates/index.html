@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git & GitHub To-Do</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">Git & GitHub Assignment</div>
+        <div class="menu">
+            <a href="/">Home</a>
+            <a href="#todo">To-Do</a>
+            <a href="/api">API</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Flask To-Do Page</h1>
+            <p>Frontend + Flask API + MongoDB</p>
+        </section>
+
+        <section id="todo" class="card">
+            <h2>Add To-Do Item</h2>
+            <form id="todoForm">
+                <label>Item Name</label>
+                <input id="itemName" name="itemName" required>
+
+                <label>Item Description</label>
+                <textarea id="itemDescription" name="itemDescription" required></textarea>
+
+                <label>Item ID</label>
+                <input id="itemId" name="itemId" placeholder="e.g. 101">
+
+                <label>Item UUID</label>
+                <input id="itemUUID" name="itemUUID" placeholder="Auto-generated if empty">
+
+                <label>Item Hash</label>
+                <input id="itemHash" name="itemHash" placeholder="Auto-generated if empty">
+
+                <button type="submit">Save Item</button>
+            </form>
+            <p id="result"></p>
+        </section>
+    </main>
+
+    <script>
+        document.getElementById("todoForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const payload = {
+                itemName: document.getElementById("itemName").value,
+                itemDescription: document.getElementById("itemDescription").value,
+                itemId: document.getElementById("itemId").value,
+                itemUUID: document.getElementById("itemUUID").value,
+                itemHash: document.getElementById("itemHash").value
+            };
+
+            const response = await fetch("/submittodoitem", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+            document.getElementById("result").textContent =
+                data.message + (data.id ? ` | MongoDB ID: ${data.id}` : "");
+        });
+    </script>
+</body>
+</html>
